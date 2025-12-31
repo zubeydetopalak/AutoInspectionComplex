@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Githubdan kodlar çekiliyor...'
                 // Aşağıdaki URL'i kendi repo adresinle değiştir
-                git branch: 'main', url: 'https://github.com/zubeydetopalak/AutoInspection.git'
+                git branch: 'main', url: 'https://github.com/zubeydetopalak/AutoInspectionComplex.git'
             }
         }
 
