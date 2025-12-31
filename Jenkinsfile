@@ -5,7 +5,7 @@ pipeline {
     tools {
         maven 'Maven-3' 
     }
-
+    //zübeyde topalak com
     // --- EKLENEN KISIM: DOCKER YOLU ---
     // Jenkins'in senin bilgisayarındaki Docker'ı bulması için bu yolu gösteriyoruz.
     environment {
