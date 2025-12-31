@@ -54,12 +54,17 @@ pipeline {
         stage('4. Docker Build & Up') {
             steps {
                 script {
-                    echo 'Sistem temizleniyor ve yeniden kuruluyor...'
-                    // Çakışma olmasın diye eskileri sil (Hata verirse devam etsin diye || true var)
-                    sh 'docker compose down || true'
+                    echo 'Sistem temizleniyor (Volume verileri dahil siliniyor)...'
                     
-                    // Build et ve başlat
-                    sh 'docker compose up -d --build'
+                    // BURASI DEĞİŞTİ: yanına -v ekledik.
+                    // -v: Veritabanı kayıtlarını tutan volume'ü de siler.
+                    sh 'docker compose down -v || true' 
+                    
+                    // --no-cache: Eski image'ı kullanma, zorla yeni build al
+                    sh 'docker compose build --no-cache' 
+                    
+                    echo 'Sistem başlatılıyor...'
+                    sh 'docker compose up -d'
                     
                     echo 'Servislerin (Spring & DB) tam açılması için 60sn bekleniyor...'
                     sleep 60 
@@ -91,7 +96,7 @@ pipeline {
         always {
             script {
                 echo 'Süreç bitti, Docker kapatılıyor...'
-                sh 'docker compose down'
+                sh 'docker compose down -v'
             }
         }
     }
