@@ -1,4 +1,4 @@
-package com.zubeyde.auto.selenium.scenario;
+package selenium;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

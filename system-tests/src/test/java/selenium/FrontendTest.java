@@ -1,8 +1,10 @@
-package com.zubeyde.auto.selenium;
+package selenium;
 
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,9 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class FrontendTest {
 

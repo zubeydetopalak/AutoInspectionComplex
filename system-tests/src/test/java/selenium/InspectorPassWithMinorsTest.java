@@ -1,4 +1,4 @@
-package com.zubeyde.auto.selenium;
+package selenium;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +22,7 @@ public class InspectorPassWithMinorsTest {
     private WebDriverWait wait;
     
     // Hedef Plaka (Veritabanında randevusu olan bir plaka olmalı)
-    private final String targetPlate = "04ABC123";
+    private final String targetPlate = "35MKY456";
 
     @BeforeEach
     public void setUp() {

@@ -1,4 +1,4 @@
-package com.zubeyde.auto.selenium;
+package selenium;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
