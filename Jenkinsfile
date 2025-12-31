@@ -1,17 +1,23 @@
 pipeline {
     agent any
 
-    // Jenkins > Manage Jenkins > Tools kısmında Maven'a verdiğin isim (Genelde Maven-3)
+    // Jenkins > Manage Jenkins > Tools kısmında Maven'a verdiğin isim
     tools {
         maven 'Maven-3' 
     }
+
+    // --- EKLENEN KISIM: DOCKER YOLU ---
+    // Jenkins'in senin bilgisayarındaki Docker'ı bulması için bu yolu gösteriyoruz.
+    environment {
+        PATH = "/Applications/Docker.app/Contents/Resources/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+    }
+    // ----------------------------------
 
     stages {
         // --- 1. AŞAMA: KODLARI ÇEKME ---
         stage('1. Checkout Code') {
             steps {
                 echo 'Githubdan kodlar çekiliyor...'
-                // Aşağıdaki URL'i kendi repo adresinle değiştir
                 git branch: 'main', url: 'https://github.com/zubeydetopalak/AutoInspectionComplex.git'
             }
         }
@@ -49,7 +55,7 @@ pipeline {
             steps {
                 script {
                     echo 'Sistem temizleniyor ve yeniden kuruluyor...'
-                    // Çakışma olmasın diye eskileri sil
+                    // Çakışma olmasın diye eskileri sil (Hata verirse devam etsin diye || true var)
                     sh 'docker compose down || true'
                     
                     // Build et ve başlat
