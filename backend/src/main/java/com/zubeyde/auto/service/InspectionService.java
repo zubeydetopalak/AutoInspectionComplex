@@ -67,14 +67,13 @@ public class InspectionService {
             }
         }
 
-        // KARAR MEKANİZMASI
         String sonuc="KALDI";
         if (agirKusurVar) {
-            sonuc = "KALDI"; // Tek bir ağır kusur bile bırakır
+            sonuc = "KALDI";
         } else if (hafifKusurSayisi > 3) {
-            sonuc = "ŞARTLI GEÇTİ"; // 3 Hafif kusur şartlı geçirir
+            sonuc = "ŞARTLI GEÇTİ";
         }else {
-            sonuc = "GEÇTİ"; // Temiz
+            sonuc = "GEÇTİ";
         }
         
         inspection.setResult(sonuc);
@@ -96,14 +95,12 @@ public class InspectionService {
         if(appointmentRepository.findById(inspection.getAppointment().getId()).isEmpty()) {
             throw new RuntimeException("Randevu bulunamadı: " + inspection.getAppointment().getId());
         }
-        
-        // Use existing Inspector or create one if not exists
+
         Employee inspector = employeeRepository.findByName("Inspector")
                 .orElseGet(() -> {
                     Employee newInspector = new Employee();
                     newInspector.setName("Inspector");
                     newInspector.setRole("INSPECTOR");
-                    // Assign to the station of the appointment if possible
                     Appointment app = appointmentRepository.findById(inspection.getAppointment().getId()).orElse(null);
                     if (app != null && app.getStation() != null) {
                         newInspector.setStation(app.getStation());

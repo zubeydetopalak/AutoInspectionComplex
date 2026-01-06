@@ -7,7 +7,6 @@ import java.util.List;
 
 @Repository
 public interface StationRepository extends JpaRepository<Station, Long> {
-    // İstasyon koduna göre bul (Örn: "PERON-A1")
     Station findByStationCode(String stationCode);
 
     List<Station> findByExclusiveBrandIsNull();

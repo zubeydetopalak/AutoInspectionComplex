@@ -6,6 +6,5 @@ import java.util.List;
 
 @Repository
 public interface ChecklistTemplateRepository extends JpaRepository<ChecklistTemplate, Long> {
-    // Araç tipine göre soruları getir (Örn: "Binek" araç soruları)
     List<ChecklistTemplate> findByVehicleType(String vehicleType);
 }

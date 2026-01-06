@@ -29,9 +29,6 @@ public class CustomerService {
     public List<Vehicle> getVehiclesByCustomerPhone(String phone) {
         
         Customer customer = getCustomerByPhone(phone);
-        // if(customer.getVehicles().isEmpty()) {
-        //     throw new RuntimeException("Bu müşteriye ait araç bulunamadı!");
-        // }
         return customer.getVehicles();
     }
 }

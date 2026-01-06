@@ -6,6 +6,5 @@ import java.util.List;
 
 @Repository
 public interface InspectionDetailRepository extends JpaRepository<InspectionDetail, Long> {
-    // Bir muayeneye ait tüm detay satırlarını getir
     List<InspectionDetail> findByInspectionId(Long inspectionId);
 }

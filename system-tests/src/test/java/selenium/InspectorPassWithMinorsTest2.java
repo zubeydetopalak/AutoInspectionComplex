@@ -20,8 +20,7 @@ public class InspectorPassWithMinorsTest2 {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    
-    // Test edilecek plaka
+
     private final String targetPlate = "01ABC123";
 
     @BeforeEach
@@ -44,12 +43,10 @@ public class InspectorPassWithMinorsTest2 {
     @Test
     public void testInspectionThreeMinorDefects() {
         driver.get("http://localhost:3000");
-        
-        // 1. GİRİŞ YAP
+
         System.out.println("--- Adım 1: Inspector Girişi ---");
         performLogin("zub", "zub");
 
-        // 2. PLAKA ARA
         System.out.println("--- Adım 2: Plaka Aranıyor: " + targetPlate + " ---");
         WebElement searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.xpath("//input[@placeholder='Search by Plate Code']")
@@ -61,9 +58,7 @@ public class InspectorPassWithMinorsTest2 {
         clickSafely(searchBtn);
         sleep(1000);
 
-        // 3. INSPECTION BAŞLAT
         System.out.println("--- Adım 3: İnceleme Ekranı Açılıyor ---");
-        // React kodunda butonlar duruma göre değişiyor, hepsini kapsayan bir XPath:
         WebElement startBtn = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//td[contains(text(), '" + targetPlate + "')]/..//button[contains(text(), 'Inspection')]")
         ));
@@ -71,34 +66,23 @@ public class InspectorPassWithMinorsTest2 {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("modal-content")));
 
-        // --- KUSURLARI EKLE ---
-        // React kodunda "Far Ayarları (HAFIF_KUSUR)" şeklinde yazar. 
-        // Kodumuz "Far Ayarları" kelimesini içeren seçeneği bulup seçecek.
-
-        // 4. Kusur 1: Far (Sol)
         System.out.println("--- Adım 4: Far Ayarları (Sol) Ekleniyor ---");
         addInspectionDetail("Far Ayarları", "FAIL", "Sol far ayarı bozuk");
 
-        // 5. Kusur 2: Silecekler
         System.out.println("--- Adım 5: Silecekler Ekleniyor ---");
         addInspectionDetail("Silecekler", "FAIL", "Silecek lastiği yıpranmış");
 
-        // 6. Kusur 3: Far (Sağ - Tekrar)
         System.out.println("--- Adım 6: Far Ayarları (Sağ) Ekleniyor ---");
         addInspectionDetail("Far Ayarları", "FAIL", "Sağ far biraz yukarı bakıyor");
 
-        // 7. TAMAMLA (Complete Inspection)
         System.out.println("--- Adım 7: İnceleme Tamamlanıyor ---");
-        
-        // Modalın footer kısmındaki Complete Inspection butonu
+
         try {
             WebElement completeBtn = driver.findElement(By.xpath("//div[contains(@class, 'modal-footer')]//button[contains(text(), 'Complete Inspection')]"));
             clickSafely(completeBtn);
-            
-            // Başarı mesajını bekle ("Inspection completed!")
+
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'Inspection completed!')]")));
-            
-            // Modalın kapanmasını bekle
+
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-content")));
             sleep(1000); 
         } catch (Exception e) {
@@ -109,16 +93,13 @@ public class InspectorPassWithMinorsTest2 {
             } catch (Exception ex) {}
         }
 
-        // 8. SONUCU KONTROL ET
         System.out.println("--- Adım 8: Sonuç Kontrolü ---");
-        
-        // Show Inspection butonuna tıkla
+
         WebElement showBtn = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//td[contains(text(), '" + targetPlate + "')]/..//button[contains(text(), 'Show Inspection')]")
         ));
         clickSafely(showBtn);
-        
-        // React kodunda: <p><strong>Result:</strong> {currentInspection.result}</p>
+
         WebElement resultElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.xpath("//p[strong[contains(text(), 'Result:')]]")
         ));
@@ -128,7 +109,6 @@ public class InspectorPassWithMinorsTest2 {
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].style.backgroundColor='orange'", resultElement);
 
-        // DOĞRULAMA
         boolean isPassOrConditional = resultText.contains("ŞARTLI") || 
                                       resultText.contains("CONDITIONAL") || 
                                       resultText.contains("PASS") || 
@@ -151,16 +131,11 @@ public class InspectorPassWithMinorsTest2 {
         }
     }
 
-    // --- YENİLENMİŞ DROPDOWN METODU (REACT UYUMLU) ---
     private void addInspectionDetail(String keyword, String status, String note) {
-        // 1. Checklist Item Dropdown'ı Bul (Parent div üzerinden)
-        // React kodu: <div><label>Checklist Item:</label><select>...</select></div>
-        // XPath: Label'ı bul, üst elemente (parent) çık, oradan select'i bul.
+
         WebElement checklistSelectElem = driver.findElement(By.xpath("//label[contains(text(), 'Checklist Item')]/..//select"));
         Select selectItem = new Select(checklistSelectElem);
         
-        // 2. Seçeneği Bul (Partial Match - İçerir mantığı)
-        // React'ta değerler "Far Ayarları (HAFIF_KUSUR)" şeklinde olduğu için döngüyle buluyoruz.
         boolean found = false;
         List<WebElement> options = selectItem.getOptions();
         
@@ -174,27 +149,21 @@ public class InspectorPassWithMinorsTest2 {
         
         if (!found) {
             System.out.println("UYARI: Dropdown'da '" + keyword + "' içeren seçenek bulunamadı. İlk seçenek seçiliyor.");
-            // Test patlamasın diye ilki seçiyoruz (Debugging için)
             if(options.size() > 1) selectItem.selectByIndex(1);
         }
 
-        // 3. Status Dropdown
         WebElement statusSelectElem = driver.findElement(By.xpath("//label[contains(text(), 'Status')]/..//select"));
         Select selectStatus = new Select(statusSelectElem);
-        // React'ta visible text "PASS" ve "FAIL" olarak görünüyor.
         selectStatus.selectByVisibleText(status); 
 
-        // 4. Note Input
         WebElement noteInput = driver.findElement(By.xpath("//input[@placeholder='Inspector Note']"));
         noteInput.clear();
         noteInput.sendKeys(note);
 
-        // 5. Add Button
-        // Formun içindeki "Add" butonunu bul
         WebElement addBtn = driver.findElement(By.xpath("//button[text()='Add']"));
         clickSafely(addBtn);
         
-        sleep(500); // Eklenmesini bekle
+        sleep(500);
     }
 
     private void performLogin(String user, String pass) {

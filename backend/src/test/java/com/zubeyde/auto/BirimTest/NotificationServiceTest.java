@@ -62,8 +62,6 @@ public class NotificationServiceTest {
         List<InspectionDetail> details = new ArrayList<>();
         InspectionDetail detail1 = new InspectionDetail();
         detail1.setPassed(false);
-        // Assuming toString or some property is used in the output, but the service uses toString() of the list.
-        // Let's just check if it contains the failure message.
         details.add(detail1);
         inspection.setDetails(details);
 

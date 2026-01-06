@@ -18,7 +18,6 @@ public class Scenario04_TwoVehiclesTwoAppointments_IndependentFlowTest extends B
         String plate1 = "S04A" + suffix;
         String plate2 = "S04B" + suffix;
 
-        // ===== Secretary creates customer + 2 vehicles + 2 appointments =====
         openApp();
         performLogin("secretary", "password");
         secretarySearchByPhone(phone);
@@ -32,7 +31,6 @@ public class Scenario04_TwoVehiclesTwoAppointments_IndependentFlowTest extends B
         secretaryCreateAppointmentForPlate(plate1);
         secretaryCreateAppointmentForPlate(plate2);
 
-        // ===== Inspector completes only first appointment =====
         openApp();
         performLogin("zub", "zub");
 
@@ -41,13 +39,11 @@ public class Scenario04_TwoVehiclesTwoAppointments_IndependentFlowTest extends B
         inspectorAddInspectionDetail("Far", true, "OK - " + suffix);
         inspectorClickCompleteInspection();
 
-        // Plate1 should be completed -> Show Inspection
         WebElement btn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//td[contains(text(), '" + plate1 + "')]/..//button")
         ));
         Assertions.assertTrue(btn1.getText().contains("Show Inspection"), "Plate1 should show Show Inspection");
 
-        // Plate2 still pending (no inspection started) -> Start Inspection
         inspectorSearchByPlate(plate2);
         WebElement btn2 = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//td[contains(text(), '" + plate2 + "')]/..//button")

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    // Belirli durumdaki randevuları getir (Örn: PENDING olanlar)
     List<Appointment> findByStatus(AppointmentStatus status);
     
 

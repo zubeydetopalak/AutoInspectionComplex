@@ -17,7 +17,6 @@ public class Scenario01_PassInspection_EndToEndTest extends BaseScenarioSelenium
         String plate = "S01" + suffix;
         String chassis = "CH" + suffix;
 
-        // ===== Secretary creates Customer + Vehicle + Appointment =====
         openApp();
         performLogin("secretary", "password");
 
@@ -34,27 +33,22 @@ public class Scenario01_PassInspection_EndToEndTest extends BaseScenarioSelenium
         Assertions.assertFalse(stationCode.equalsIgnoreCase("Pending"), "Station should be assigned (not Pending)");
         closeModalByText("Close");
 
-        // ===== Inspector starts inspection, adds details, completes =====
         openApp();
         performLogin("zub", "zub");
 
         inspectorSearchByPlate(plate);
-        // Verify row exists and status is visible
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//tr[td[contains(text(), '" + plate + "')]]")));
 
         inspectorOpenInspectionModalFromPlateRow(plate);
-        // All PASS => result should become GEÇTİ
         inspectorAddInspectionDetail("Fren", true, "All good - " + suffix);
         inspectorAddInspectionDetail("Far", true, "All good - " + suffix);
         inspectorClickCompleteInspection();
 
-        // Button should now be "Show Inspection" (result is no longer PENDING)
         WebElement actionBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//td[contains(text(), '" + plate + "')]/..//button")
         ));
         Assertions.assertTrue(actionBtn.getText().contains("Show Inspection"), "After completion, action should be Show Inspection");
 
-        // ===== Secretary sees appointment completed (cross-role verification) =====
         openApp();
         performLogin("secretary", "password");
 

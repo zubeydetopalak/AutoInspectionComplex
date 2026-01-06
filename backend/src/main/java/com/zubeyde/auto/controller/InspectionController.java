@@ -15,7 +15,6 @@ public class InspectionController {
     @Autowired
     private InspectionService inspectionService;
 
-    // Muayeneyi tamamla ve sonucu hesapla
     @PostMapping("/{id}/complete")
     public Inspection completeInspection(@Valid @PathVariable(name = "id") Long id, @RequestBody List<InspectionDetail> details) {
 

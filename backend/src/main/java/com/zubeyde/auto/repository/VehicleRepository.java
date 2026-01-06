@@ -6,6 +6,5 @@ import java.util.Optional;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
-    // Plakaya göre araç bul
     Optional<Vehicle> findByPlateCode(String plateCode);
 }

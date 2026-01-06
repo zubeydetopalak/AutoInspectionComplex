@@ -152,7 +152,7 @@ public abstract class BaseScenarioSeleniumTest {
             try {
                 brandSelect.selectByIndex(1);
             } catch (Exception ignore) {
-                // no-op
+
             }
         }
 
@@ -168,7 +168,6 @@ public abstract class BaseScenarioSeleniumTest {
         clickSafely(saveBtn);
         handlePotentialAlert();
 
-        // Form closes and Add Vehicle button comes back
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(text(), 'Add Vehicle')]")));
     }
 
@@ -195,7 +194,7 @@ public abstract class BaseScenarioSeleniumTest {
                 By.xpath("//p[strong[contains(text(), 'Assigned Station')]]")
         ));
         String text = stationLine.getText();
-        // Example: "Assigned Station: ST-GEN-01"
+
         int idx = text.indexOf(":");
         return idx >= 0 ? text.substring(idx + 1).trim() : text.trim();
     }
@@ -271,7 +270,7 @@ public abstract class BaseScenarioSeleniumTest {
             }
         }
         if (!selected) {
-            // fallback to first real option
+
             if (selectItem.getOptions().size() > 1) {
                 selectItem.selectByIndex(1);
             }

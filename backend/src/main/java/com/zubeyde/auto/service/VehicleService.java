@@ -21,7 +21,6 @@ public class VehicleService {
     @Autowired
     private BrandRepository brandRepository;
     public Vehicle registerVehicle(Vehicle vehicle) {
-        // Plaka kontrolü yapılabilir
         Optional<Vehicle> existing = vehicleRepository.findByPlateCode(vehicle.getPlateCode());
         System.out.println(existing.toString());
         if (existing.isPresent()) {

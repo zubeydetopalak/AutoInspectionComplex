@@ -12,11 +12,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
-    //controller kısmında değişiklik yapıldı
     @Autowired
     private AppointmentService appointmentService;
 
-    // Örnek istek: POST /api/appointments?plate=34ABC123&time=2023-12-01T10:00:00
     @PostMapping
     public Appointment createAppointment(@RequestParam String plate) {
         return appointmentService.createAppointment(plate);

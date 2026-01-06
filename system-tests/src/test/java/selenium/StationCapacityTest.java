@@ -20,7 +20,6 @@ public class StationCapacityTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    // --- TEST VERİLERİ ---
     private final String targetPlate = "99ZZZ123";
     private final String targetStation = "ST-GEN-01";
 
@@ -46,11 +45,9 @@ public class StationCapacityTest {
     public void testCapacityRestoresAfterCompletion() {
         driver.get("http://localhost:3000");
 
-        // 1. GİRİŞ
         System.out.println("--- Adım 1: Giriş Yapılıyor ---");
         performLogin("secretary", "password");
 
-        // 2. İLK KAPASİTE ÖLÇÜMÜ
         System.out.println("--- Adım 2: İlk ölçüm yapılıyor ---");
         safeSwitchTab("Station Status", "Station Overview");
 
@@ -65,7 +62,6 @@ public class StationCapacityTest {
         
         sleep(1000);
 
-        // 3. RANDEVU SAYFASINA GEÇ
         System.out.println("--- Adım 3: Randevu sayfasına geçiliyor ---");
         safeSwitchTab("Customers & Appointments", "Customer Management");
 
@@ -84,23 +80,18 @@ public class StationCapacityTest {
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", editBtn);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("modal-content")));
-        
-        // --- KRİTİK DÜZELTME BAŞLANGICI ---
-        // 4. GÜNCELLEME İŞLEMİ VE DOĞRULAMA
+
         System.out.println("--- Adım 4: Statü COMPLETED yapılıyor ---");
         
         Select statusSelect = new Select(driver.findElement(By.tagName("select")));
         statusSelect.selectByValue("COMPLETED");
-        
-        // Seçimin React tarafından algılandığından emin olmak için ufak bir bekleme
+
         sleep(500);
 
         System.out.println("Update butonuna basılıyor...");
         WebElement updateBtn = driver.findElement(By.xpath("//button[contains(text(), 'Update')]"));
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", updateBtn);
-        
-        // DÜZELTME: React'ın "Appointment status updated!" mesajını görene kadar bekle.
-        // Bu mesaj çıkmadan modalı kapatırsan işlem veritabanına gitmeyebilir.
+
         try {
             System.out.println("Başarı mesajı bekleniyor...");
             wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -111,22 +102,17 @@ public class StationCapacityTest {
             System.out.println("⚠️ UYARI: Başarı mesajı yakalanamadı, ama devam ediliyor.");
         }
 
-        // Mesajı gördükten sonra modalı kapat
         WebElement closeBtn = driver.findElement(By.xpath("//button[contains(text(), 'Close')]"));
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", closeBtn);
-        
-        // Modalın tamamen kaybolmasını bekle
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-content")));
-        // --- KRİTİK DÜZELTME BİTİŞİ ---
 
-        // 5. SONUCU KONTROL ET
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-content")));
+
         System.out.println("--- Adım 5: Sonucu kontrol etmek için dönülüyor ---");
         safeSwitchTab("Station Status", "Station Overview");
         
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("stations-grid")));
         sleep(1000); 
 
-        // Kartı tekrar bul (DOM yenilendi)
         WebElement finalCard = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(stationCardXpath)));
         WebElement finalCapText = finalCard.findElement(By.xpath(".//p[contains(., 'Capacity:')]"));
         
@@ -135,7 +121,6 @@ public class StationCapacityTest {
 
         highlightElement(finalCard, "#90EE90"); 
 
-        // 6. DOĞRULAMA
         Assertions.assertEquals(initialCapacity + 1, finalCapacity, 
             "HATA: Kapasite artmadı! (Eski: " + initialCapacity + ", Yeni: " + finalCapacity + ")");
             
@@ -149,7 +134,6 @@ public class StationCapacityTest {
         }
     }
 
-    // --- YARDIMCI METOTLAR ---
 
     private void safeSwitchTab(String tabName, String expectedHeader) {
         try {

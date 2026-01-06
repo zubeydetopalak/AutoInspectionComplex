@@ -26,7 +26,6 @@ public class Scenario05_SecretaryEditsStatus_EndToEndTest extends BaseScenarioSe
         secretaryCreateVehicle(plate, "Volkswagen", "2020", chassis);
         secretaryCreateAppointmentForPlate(plate);
 
-        // Show All Appointments -> open modal via Edit Status -> set COMPLETED
         WebElement showAllBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(text(), 'Show All Appointments')]"))
         );
@@ -43,7 +42,6 @@ public class Scenario05_SecretaryEditsStatus_EndToEndTest extends BaseScenarioSe
         secretaryUpdateStatusInDetailsModal("COMPLETED");
         closeModalByText("Close");
 
-        // Verify row shows COMPLETED badge
         WebElement rowAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//tr[td[contains(text(), '" + plate + "')] and td//*[contains(text(), 'COMPLETED')]]")
         ));

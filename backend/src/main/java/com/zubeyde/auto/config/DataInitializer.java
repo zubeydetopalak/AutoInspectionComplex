@@ -36,7 +36,6 @@ public class DataInitializer {
                                VehicleRepository vehicleRepository,
                                AppointmentRepository appointmentRepository) {
         return args -> {
-            // 1. Init Brands
             if (brandRepository.count() == 0) {
                 List<Brand> brands = Arrays.asList(
                     new Brand(null, "Toyota", "Japan"),
@@ -54,21 +53,17 @@ public class DataInitializer {
                 System.out.println("Default brands initialized.");
             }
 
-            // 2. Init Stations
             if (stationRepository.count() == 0) {
-                // Fetch some brands for exclusive stations
                 Brand bmw = brandRepository.findByName("BMW").orElse(null);
                 Brand toyota = brandRepository.findByName("Toyota").orElse(null);
                 Brand mercedes = brandRepository.findByName("Mercedes-Benz").orElse(null);
 
                 List<Station> stations = Arrays.asList(
-                    // General Stations (No exclusive brand)
                     createStation("ST-GEN-01", null, true, 5),
                     createStation("ST-GEN-02", null, true, 5),
                     createStation("ST-GEN-03", null, true, 5),
-                    createStation("ST-GEN-04", null, false, 3), // Closed one
+                    createStation("ST-GEN-04", null, false, 3),
 
-                    // Exclusive Stations
                     createStation("ST-BMW-01", bmw, true, 3),
                     createStation("ST-TOY-01", toyota, true, 4),
                     createStation("ST-MER-01", mercedes, true, 3)
@@ -78,7 +73,6 @@ public class DataInitializer {
                 System.out.println("Default stations initialized.");
             }
 
-            // 3. Init Checklist Templates
             if (checklistTemplateRepository.count() == 0) {
                 ChecklistTemplate t1 = new ChecklistTemplate();
                 t1.setDescription("Fren Sistemi Kontrolü");
@@ -118,7 +112,6 @@ public class DataInitializer {
                 System.out.println("Default checklist templates initialized.");
             }
 
-            // 4. Init Users
             if (authRepository.count() == 0) {
                 Admin secretary = new Admin();
                 secretary.setUsername("secretary");
@@ -141,7 +134,6 @@ public class DataInitializer {
                 System.out.println("Default users initialized.");
             }
 
-            // 5. Init Customer, Vehicle, Appointment
             if (customerRepository.count() == 0) {
                 Customer customer = new Customer();
                 customer.setName("Ahmet Yılmaz");

@@ -23,8 +23,7 @@ public class InspectorSaveTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    
-    // Hedef Plaka
+
     private final String targetPlate = "90ABC123";
 
     @BeforeEach
@@ -47,12 +46,10 @@ public class InspectorSaveTest {
     @Test
     public void testSaveButtonKeepsStatusPending() {
         driver.get("http://localhost:3000");
-        
-        // 1. GİRİŞ YAP
+
         System.out.println("--- Adım 1: Inspector Girişi ---");
         performLogin("zub", "zub");
 
-        // 2. PLAKA ARA
         System.out.println("--- Adım 2: Plaka Aranıyor: " + targetPlate + " ---");
         WebElement searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.xpath("//input[@placeholder='Search by Plate Code']")
@@ -64,58 +61,42 @@ public class InspectorSaveTest {
         clickSafely(searchBtn);
         sleep(1000);
 
-        // 3. START/UPDATE INSPECTION BUTONUNA BAS (Modalı Aç)
         System.out.println("--- Adım 3: İnceleme Modalı Açılıyor ---");
-        
-        // Buton "Start Inspection" veya daha önce dokunulduysa "Update Inspection" olabilir.
-        // Amaç modalı açmak.
+
         WebElement actionBtn = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//td[contains(text(), '" + targetPlate + "')]/..//button")
         ));
         clickSafely(actionBtn);
 
-        // Modalı bekle
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("modal-content")));
 
-        // 4. BİR DETAY EKLE (Örn: Far Ayarları -> FAIL)
         System.out.println("--- Adım 4: Detay Ekleniyor (Değişiklik yapılıyor) ---");
         addInspectionDetail("Far Ayarları", "FAIL", "Ayarsız (Kaydet testi)");
 
-        // 5. 'COMPLETE' DEĞİL, 'KAYDET' BUTONUNA BAS
         System.out.println("--- Adım 5: 'Kaydet' Butonuna Basılıyor (Tamamla DEĞİL) ---");
         
         WebElement kaydetBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.xpath("//button[contains(text(), 'Kaydet')]")
         ));
-        
-        // Görsellik: Kaydet butonunu vurgula
+
         ((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid orange'", kaydetBtn);
         
         clickSafely(kaydetBtn);
-        
-        // Modalın kapanmasını bekle (React kodunda closeModal() çağrılıyor)
+
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-content")));
         sleep(1000); // Tablonun güncellenmesi için kısa bekleme
 
-        // 6. DOĞRULAMA: BUTON "UPDATE INSPECTION" OLMALI
         System.out.println("--- Adım 6: Buton Metni Kontrol Ediliyor ---");
-        
-        // Tablodaki butonu tekrar bul
+
         WebElement statusButton = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.xpath("//td[contains(text(), '" + targetPlate + "')]/..//button")
         ));
         
         String buttonText = statusButton.getText();
         System.out.println("Tablodaki Buton Metni: " + buttonText);
-        
-        // Görsellik: Butonu mavi yap
+
         ((JavascriptExecutor) driver).executeScript("arguments[0].style.backgroundColor='cyan'", statusButton);
         ((JavascriptExecutor) driver).executeScript("arguments[0].style.color='black'", statusButton);
-
-        // ASSERTION
-        // Beklenen durum: Buton "Update Inspection" yazmalı.
-        // Eğer "Show Inspection" yazıyorsa işlem tamamlanmış (Complete) demektir, bu hatadır.
-        // Eğer "Start Inspection" yazıyorsa kayıt olmamış demektir.
         
         boolean isPending = buttonText.contains("Update Inspection");
         
@@ -135,10 +116,8 @@ public class InspectorSaveTest {
         }
     }
 
-    // --- YARDIMCI METOTLAR ---
 
     private void addInspectionDetail(String checklistItemText, String status, String note) {
-        // Item Seç
         WebElement checklistDropdown = driver.findElement(By.xpath("//label[contains(text(), 'Checklist Item')]/following-sibling::select"));
         Select selectItem = new Select(checklistDropdown);
         
@@ -151,13 +130,11 @@ public class InspectorSaveTest {
                 break;
             }
         }
-        
-        // Eğer bulamazsa ilkini seç (Test patlamasın diye fallback)
+
         if (!itemFound && options.size() > 1) {
             selectItem.selectByIndex(1);
         }
 
-        // Status Seç
         WebElement statusDropdown = driver.findElement(By.xpath("//label[contains(text(), 'Status')]/following-sibling::select"));
         Select selectStatus = new Select(statusDropdown);
         if (status.equalsIgnoreCase("PASS")) {
@@ -166,10 +143,8 @@ public class InspectorSaveTest {
             selectStatus.selectByVisibleText("FAIL");
         }
 
-        // Not Ekle
         driver.findElement(By.xpath("//input[@placeholder='Inspector Note']")).sendKeys(note);
 
-        // Ekle Butonu
         WebElement addBtn = driver.findElement(By.xpath("//button[contains(text(), 'Add') and not(contains(text(), 'Vehicle'))]"));
         clickSafely(addBtn);
         sleep(500);

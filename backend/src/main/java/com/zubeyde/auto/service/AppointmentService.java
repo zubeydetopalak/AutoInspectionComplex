@@ -19,15 +19,10 @@ public class AppointmentService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    /**
-     * Otomatik İstasyon Atama Mantığı (AVM Mantığı)
-     * Markaya özel peron varsa oraya, yoksa genel perona atar.
-     */
     public Appointment createAppointment(String plateCode) {
         Vehicle vehicle = vehicleRepository.findByPlateCode(plateCode)
                 .orElseThrow(() -> new RuntimeException("Araç bulunamadı!"));
 
-        // -- MANTIK: Uygun İstasyonu Bul --
         Station targetStation = findBestStationForVehicle(vehicle);
         
         Appointment appointment = new Appointment();
@@ -41,21 +36,17 @@ public class AppointmentService {
     }
 
     private Station findBestStationForVehicle(Vehicle vehicle) {
-        // 1. Önce bu markaya özel bir istasyon var mı diye bak (Örn: Sadece BMW bakan yer)
-        // Not: Burada basitlik adına tüm istasyonları çekip filtreliyoruz.
         List<Station> allStations = stationRepository.findAll();
         
         for (Station station : allStations) {
-            // Eğer istasyonun özel bir markası varsa ve aracın markasıyla eşleşiyorsa
-            if (station.getExclusiveBrand() != null && 
+           if (station.getExclusiveBrand() != null &&
                 station.getExclusiveBrand().getName().equals(vehicle.getBrand().getName())) {
-                return station; // Özel servise yönlendir
+                return station;
             }
         }
 
-        // 2. Özel istasyon yoksa, genel istasyonlardan ilk boş olanı bul
         return allStations.stream()
-                .filter(s -> s.getExclusiveBrand() == null) // Genel istasyon
+                .filter(s -> s.getExclusiveBrand() == null)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Streamde Uygun istasyon bulunamadı!"));
     }
