@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
-    //update
+    //update yapıldı
     @Autowired
     private AppointmentService appointmentService;
 
